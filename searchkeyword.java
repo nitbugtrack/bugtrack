@@ -8,7 +8,7 @@ public class searchkeyword {
 		System.out.println("Hello World!");
 	
 		String url = "jdbc:mysql://localhost:3306/"; 
-		String dbName = "bugtrack"; 
+		String dbName = "mozilla_db"; 
 		String driver = "com.mysql.jdbc.Driver"; 
 		String userName = "root";
 		String password = ""; 
@@ -17,14 +17,14 @@ public class searchkeyword {
 			Class.forName(driver).newInstance(); 
 			Connection conn = DriverManager.getConnection(url+dbName,userName,password); 
 			Statement st = conn.createStatement(); 
-			ResultSet res = st.executeQuery("SELECT Bug_ID,Summary FROM mozilla_1"); 
+			ResultSet res = st.executeQuery("SELECT bug_id, short_desc FROM bugs"); 
 			while(res.next()) 
 			{ 
 				//int bug_id = res.getInt("ID"); 
 				
 				//Captured Summary for a row
 				//Tested on 6th Aug 11:39pm | Aditya | Working
-				String summary = res.getString("Summary"); 
+				String summary = res.getString("short_desc"); 
 				//System.out.println(bug_id + "\t" + summary);
 				
 				
@@ -46,7 +46,7 @@ public class searchkeyword {
 					System.out.println(word+","+tokens.length);
 					
 					Statement st2 = conn.createStatement();
-					ResultSet res2 = st2.executeQuery("SELECT count(*) AS counter FROM mozilla_2 WHERE Word='"+word+"'");
+					ResultSet res2 = st2.executeQuery("SELECT count(*) AS counter FROM mozilla_1 WHERE Word='"+word+"'");
 					//System.out.println(res2);
 					
 					int WordCount=-1;
@@ -60,12 +60,12 @@ public class searchkeyword {
 					if(WordCount==0)
 					{
 						++WordCount;
-						st2.executeUpdate("INSERT into mozilla_2(Word, Count) VALUES('"+word+"', '"+WordCount+"')");
+						st2.executeUpdate("INSERT into mozilla_1(Word, Count) VALUES('"+word+"', '"+WordCount+"')");
 					}
 					else						
 					{
 						++WordCount;
-						st2.executeUpdate("UPDATE mozilla_2 SET Count='"+WordCount+"' WHERE Word ='"+word+"'");
+						st2.executeUpdate("UPDATE mozilla_1 SET Count='"+WordCount+"' WHERE Word ='"+word+"'");
 					}
 				} 
 			}
