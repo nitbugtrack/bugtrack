@@ -18,6 +18,7 @@ public class searchkeyword {
 			Connection conn = DriverManager.getConnection(url+dbName,userName,password); 
 			Statement st = conn.createStatement(); 
 			ResultSet res = st.executeQuery("SELECT bug_id, short_desc FROM bugs WHERE bug_id <=10000 "); 
+			int WordCount;
 			while(res.next()) 
 			{ 
 				int bug_id = res.getInt("bug_id"); 
@@ -46,10 +47,10 @@ public class searchkeyword {
 					System.out.println(word+","+tokens.length);
 					
 					Statement st2 = conn.createStatement();
-					ResultSet res2 = st2.executeQuery("SELECT count(*) AS counter FROM mozilla_1 WHERE Word='"+word+"'");
+					ResultSet res2 = st2.executeQuery("SELECT Count AS counter FROM mozilla_1 WHERE Word='"+word+"'");
 					//System.out.println(res2);
 					
-					int WordCount=0;
+					WordCount=0;
 					while(res2.next())
 					{
 						WordCount = res2.getInt("counter");
