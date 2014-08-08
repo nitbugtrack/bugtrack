@@ -17,19 +17,19 @@ public class searchkeyword {
 			Class.forName(driver).newInstance(); 
 			Connection conn = DriverManager.getConnection(url+dbName,userName,password); 
 			Statement st = conn.createStatement(); 
-			ResultSet res = st.executeQuery("SELECT bug_id, short_desc FROM bugs"); 
+			ResultSet res = st.executeQuery("SELECT bug_id, short_desc FROM bugs WHERE bug_id <=10000 "); 
 			while(res.next()) 
 			{ 
-				//int bug_id = res.getInt("ID"); 
+				int bug_id = res.getInt("bug_id"); 
 				
 				//Captured Summary for a row
 				//Tested on 6th Aug 11:39pm | Aditya | Working
 				String summary = res.getString("short_desc"); 
-				//System.out.println(bug_id + "\t" + summary);
+				System.out.println(bug_id + "\t" + summary);
 				
 				
 				//Splitting into Words
-				String delims ="[ ,.!()''\"?-]+";
+				String delims ="[ ,.!()''\\\\\"?-]+";
 				String tokens[] = summary.split(delims);
 				
 				//Converting to LowerCase Characters
@@ -49,7 +49,7 @@ public class searchkeyword {
 					ResultSet res2 = st2.executeQuery("SELECT count(*) AS counter FROM mozilla_1 WHERE Word='"+word+"'");
 					//System.out.println(res2);
 					
-					int WordCount=-1;
+					int WordCount=0;
 					while(res2.next())
 					{
 						WordCount = res2.getInt("counter");
