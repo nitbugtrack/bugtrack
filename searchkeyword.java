@@ -30,7 +30,7 @@ public class searchkeyword {
 				
 				
 				//Splitting into Words
-				String delims ="[ ,.!()''\\\\\"?-]+";
+				String delims ="[ \t\n,\\.\"!?$~()\\[\\]\\{\\}:;/\\\\<>+=%*]+";
 				String tokens[] = summary.split(delims);
 				
 				//Converting to LowerCase Characters
