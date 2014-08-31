@@ -1,5 +1,6 @@
 package bugtrack;
 import java.sql.*;
+import java.io.*;
 
 public class searchkeyword {
 
@@ -17,8 +18,10 @@ public class searchkeyword {
 			Class.forName(driver).newInstance(); 
 			Connection conn = DriverManager.getConnection(url+dbName,userName,password); 
 			Statement st = conn.createStatement(); 
-			ResultSet res = st.executeQuery("SELECT bug_id, short_desc FROM bugs WHERE bug_id <=10000 "); 
-			int WordCount;
+			ResultSet res = st.executeQuery("SELECT bug_id, short_desc FROM bugs WHERE bug_id <=10000"); 
+			//int WordCount;
+			FileWriter fw = new FileWriter("words.txt");
+			BufferedWriter bw = new BufferedWriter(fw);
 			while(res.next()) 
 			{ 
 				int bug_id = res.getInt("bug_id"); 
@@ -30,34 +33,45 @@ public class searchkeyword {
 				
 				
 				//Splitting into Words
-				String delims ="[ \t\n,\\.\"!?$~()\\[\\]\\{\\}:;/\\\\<>+=%*]+";
+				String delims ="[ \t\n,\\.\"!?$~()\\[\\]\\{\\}:;/\\\\<>+=%*\']+";
 				String tokens[] = summary.split(delims);
+				
+				
 				
 				//Converting to LowerCase Characters
 				for(int loop_var=0; loop_var<tokens.length; ++loop_var)
 				{	
 					
 					String word = tokens[loop_var].toLowerCase();
+					word = word.replaceAll("[^a-zA-Z]"," ");
 					
 					//Ignoring 2 characters & blank words 
 					//Tested on 6th Aug 11:40pm | Aditya | Working
-					if((word.equals(""))==true || (word.length()<3)) 
+					if((word.equals(""))==true || word.length()<3) 
 							continue;
 					
 					System.out.println(word+","+tokens.length);
 					
-					Statement st2 = conn.createStatement();
-					ResultSet res2 = st2.executeQuery("SELECT Count AS counter FROM mozilla_1 WHERE Word='"+word+"'");
+					
+					//Statement st2 = conn.createStatement();
+					//ResultSet res2 = st2.executeQuery("SELECT Count AS counter FROM mozilla_1 WHERE Word='"+word+"'");
 					//System.out.println(res2);
 					
+					/*
 					WordCount=0;
 					while(res2.next())
 					{
 						WordCount = res2.getInt("counter");
-					}					
+					}
+					
+					*/
 					//System.out.println(WordCount);
 					//Queries re-tested on 6th Aug | 11:43pm | Aditya | working
 					//System.out.println("Word="+word+", Count="+WordCount);
+					
+					/*
+					 * Code For Storing from MOZILLA_DB into Table
+					 * Code Commented on 25th Aug 16:23 
 					if(WordCount==0)
 					{
 						++WordCount;
@@ -68,16 +82,36 @@ public class searchkeyword {
 						++WordCount;
 						st2.executeUpdate("UPDATE mozilla_1 SET Count='"+WordCount+"' WHERE Word ='"+word+"'");
 					}
+					*/
+					
+					/* Code for storing in a Text File from MOZILLA_DB
+					 */
+					try
+					{
+						//String sample = "I am trying to write this into a file!";
+						//System.out.println(word);
+						
+						bw.write(word);
+						bw.newLine();
+						
+					}
+					catch(Exception e)
+					{
+						e.getMessage();
+					}
 				} 
 			}
 
 			System.out.println("Ran Successfully");
 			conn.close(); 
+			bw.close();
+			fw.close();
 		}
 		catch (Exception e) 
 		{ 
 			//e.getMessage();
 			e.printStackTrace(); 
 		} 
+		
 	}
  } 
